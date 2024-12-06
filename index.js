@@ -26,16 +26,16 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(1).trim().split(/ +/g);
   const command = args.shift()?.toLowerCase();
 
+  const voiceChannel = message.member?.voice?.channel;
+  if (!voiceChannel && command !== 'stop') {
+    return message.reply('You need to join a voice channel first!');
+  }
+
   if (command === 'play') {
     const url = args[0];
     console.log(`Provided url: ${url}`);
 
     if (!url) return message.reply('Please provide a YouTube URL.');
-
-    const voiceChannel = message.member?.voice?.channel;
-    if (!voiceChannel) {
-      return message.reply('You need to join a voice channel first!');
-    }
 
     try {
       await distube.play(voiceChannel, url, {
@@ -46,6 +46,19 @@ client.on('messageCreate', async (message) => {
       console.error('Error playing audio:', error);
       message.reply('There was an error playing the audio.');
     }
+  } else if (command === 'stop') {
+    try {
+      const queue = distube.getQueue(voiceChannel);
+      if (!queue) {
+        return message.reply('There is no music playing to stop.');
+      }
+
+      queue.stop(); // Stops playback and clears the queue
+      message.reply('Music has been stopped, and the queue has been cleared.');
+    } catch (error) {
+      console.error('Error stopping music:', error);
+      message.reply('There was an error stopping the music.');
+    }
   }
 });
 
@@ -54,14 +67,14 @@ distube.on('playSong', (queue, song) =>
 );
 
 distube.on('error', (channel, error) => {
-    if (channel && channel.send) {
-      channel.send(`An error occurred: ${error.message}`);
-    } else {
-      console.error('DisTube Error:', error);
-    }
+  if (channel && channel.send) {
+    channel.send(`An error occurred: ${error.message}`);
+  } else {
+    console.error('DisTube Error:', error);
+  }
 
-    console.error('Channel:', channel);
-    console.error('Error:', error);
-  });
+  console.error('Channel:', channel);
+  console.error('Error:', error);
+});
 
 client.login(process.env.DISCORD_TOKEN);
