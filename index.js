@@ -100,7 +100,14 @@ client.on('messageCreate', async (message) => {
 
             message.reply(`**Current Queue:**\n${queueString}`);
         } else if (command === 'help') {
-            message.reply('Available commands are: play {url}, stop, kill, skip, rewind, queue, help.');
+            message.reply('Available commands are:\n\n' +
+                'play {url} - Plays a YouTube URL or adds it to the queue if a song is playing.\n' +
+                'stop - Stops any current music and clears the queue.\n' +
+                'kill - Disconnects the bot from the voice channel.\n' +
+                'skip - Plays the next song in the queue.\n' +
+                'rewind - Plays the previous song in the queue.\n' +
+                'queue - Displays the current queue.\n' +
+                'help - Displays the list of available commands (please request more!).');
         }
     } catch (error) {
         console.error(`Error in command ${command}:`, error);
