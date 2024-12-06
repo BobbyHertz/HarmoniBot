@@ -51,10 +51,6 @@ client.on('messageCreate', async (message) => {
 
             message.reply('Music has been stopped, and the queue has been cleared.');
         } else if (command === 'kill') {
-            const queue = distube.getQueue(voiceChannel);
-            if (!queue) return message.reply('There is no music playing to stop.');
-
-            queue.stop(); // Stops playback and clears the queue
             distube.voices.get(voiceChannel.guild.id)?.leave(); // Makes the bot leave the voice channel
 
             message.reply('Goodbye!');
