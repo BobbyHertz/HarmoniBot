@@ -14,7 +14,7 @@ const client = new Client({
 });
 
 const distube = new DisTube(client, {
-    plugins: [new YtDlpPlugin()],
+    plugins: [new YtDlpPlugin()]
 });
 
 client.once('ready', () => {
@@ -39,10 +39,14 @@ client.on('messageCreate', async (message) => {
 
             if (!url) return message.reply('Please provide a YouTube URL.');
 
+            const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
+
             await distube.play(voiceChannel, url, {
                 textChannel: message.channel,
                 member: message.member,
             });
+
+            loadingMsg.delete();
         } else if (command === 'stop') {
             const queue = distube.getQueue(voiceChannel);
             if (!queue) return message.reply('There is no music playing to stop.');
@@ -115,9 +119,11 @@ distube.on('playSong', (queue, song) =>
     queue.textChannel.send(`🎶 Playing \`${song.name}\` - \`${song.formattedDuration}\``)
 );
 
-distube.on('addSong', (queue, song) =>
-    queue.textChannel.send(`Added \`${song.name}\` - \`${song.formattedDuration}\` to the queue!`)
-);
+distube.on('addSong', (queue, song) => {
+    if (queue.songs.length > 1) {
+        queue.textChannel.send(`Added \`${song.name}\` - \`${song.formattedDuration}\` to the queue!`)
+    }
+});
 
 distube.on('error', (channel, error) => {
     if (channel && channel.send) {
