@@ -53,11 +53,11 @@ client.on('messageCreate', async (message) => {
 
             queue.stop(); // Stops playback and clears the queue
 
-            message.reply('Music has been stopped, and the queue has been cleared.');
+            message.channel.send('Music has been stopped, and the queue has been cleared.');
         } else if (command === 'kill') {
             distube.voices.get(voiceChannel.guild.id)?.leave(); // Makes the bot leave the voice channel
 
-            message.reply('Goodbye!');
+            message.channel.send('Goodbye!');
         } else if (command === 'skip') {
             const queue = distube.getQueue(voiceChannel);
 
@@ -69,10 +69,10 @@ client.on('messageCreate', async (message) => {
 
             try {
                 await queue.skip();
-                message.reply('Skipped the current song!');
+                await message.channel.send(`Skipping to the next song...`);
             } catch (error) {
                 console.error('Error skipping song:', error);
-                message.reply('An error occurred while trying to skip the song.');
+                message.reply('An error occurred while trying to skip to the next song.');
             }
         } else if (command === 'rewind') {
             const queue = distube.getQueue(voiceChannel);
@@ -84,23 +84,23 @@ client.on('messageCreate', async (message) => {
             }
 
             try {
-                queue.previous();
-                message.reply('Rewound to the previous song!');
+                await queue.previous();
+                await message.channel.send(`Rewinding to the previous song...`);
             } catch (error) {
                 console.error('Error rewinding song:', error);
-                message.reply('An error occurred while trying to rewind the song.');
+                message.reply('An error occurred while trying to rewind to the previous song.');
             }
         } else if (command === 'queue') {
             const queue = distube.getQueue(voiceChannel);
-            if (!queue) return message.reply('The queue is empty.');
+            if (!queue) return message.channel.send('The queue is empty.');
 
             const queueString = queue.songs
                 .map((song, index) => `${index + 1}. ${song.name} - \`${song.formattedDuration}\``)
                 .join('\n');
 
-            message.reply(`**Current Queue:**\n${queueString}`);
+            message.channel.send(`**Current Queue:**\n${queueString}`);
         } else if (command === 'help') {
-            message.reply('Available commands are:\n\n' +
+            message.channel.send('Available commands are:\n\n' +
                 'play {url} - Plays a YouTube URL or adds it to the queue if a song is playing.\n' +
                 'stop - Stops any current music and clears the queue.\n' +
                 'kill - Disconnects the bot from the voice channel.\n' +
