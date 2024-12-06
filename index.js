@@ -48,7 +48,16 @@ client.on('messageCreate', async (message) => {
             if (!queue) return message.reply('There is no music playing to stop.');
 
             queue.stop(); // Stops playback and clears the queue
+
             message.reply('Music has been stopped, and the queue has been cleared.');
+        } else if (command === 'kill') {
+            const queue = distube.getQueue(voiceChannel);
+            if (!queue) return message.reply('There is no music playing to stop.');
+
+            queue.stop(); // Stops playback and clears the queue
+            distube.voices.get(voiceChannel.guild.id)?.leave(); // Makes the bot leave the voice channel
+
+            message.reply('Goodbye!');
         } else if (command === 'skip') {
             const queue = distube.getQueue(voiceChannel);
 
@@ -91,7 +100,7 @@ client.on('messageCreate', async (message) => {
 
             message.reply(`**Current Queue:**\n${queueString}`);
         } else if (command === 'help') {
-            message.reply('Available commands are: play {url}, stop, skip, rewind, queue, help.');
+            message.reply('Available commands are: play {url}, stop, kill, skip, rewind, queue, help.');
         }
     } catch (error) {
         console.error(`Error in command ${command}:`, error);
