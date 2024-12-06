@@ -76,7 +76,7 @@ client.on('messageCreate', async (message) => {
             }
         } else if (command === 'rewind') {
             const queue = distube.getQueue(voiceChannel);
-            console.log(queue);
+
             if (!queue) return message.reply('The queue is empty, so there is nothing to rewind to.');
 
             if (queue.previousSongs.length <= 0) {
