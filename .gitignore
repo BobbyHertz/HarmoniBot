@@ -1,28 +1,5 @@
 /node_modules
 /dist
-/tscheck
-/.tmp
-/source-maps
-
-/.sass-cache
-/.idea
-/bower_components
-*.iml
-.vscode/settings.json
-/coverage
-
-/.nyc_output
-app/images/postsale_dataconnect_assets/PowerShell-7.1.0-win-x64.msi
-
-*.log
-.npmrc
-
-# dotenv environment variables file
 .env
-/.vs
-.vscode/
 version.json
-
-# asdf version manager
-.tool-versions
-
+package-lock.json

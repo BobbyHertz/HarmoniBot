@@ -10,10 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@discordjs/voice": "^0.18.0",
     "@distube/yt-dlp": "^2.0.1",
-    "discord.js": "^14.16.3",
-    "distube": "^5.0.4",
     "dotenv": "^16.4.7",
     "libsodium-wrappers": "^0.7.15",
     "opusscript": "^0.0.8"
