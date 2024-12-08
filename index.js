@@ -136,7 +136,7 @@ client.on('messageCreate', async (message) => {
                 break;
         }
     } catch (error) {
-        message.reply('An error occurred while processing your command.');
+        message.reply(`An error occurred while processing your command: ${error.message}`);
         logError(`Error in command "${message.content}":`, error);
     }
 });
@@ -159,7 +159,7 @@ distube.on('finish', () => {
 
 distube.on('error', (error, queue) => {
     if (queue && queue.textChannel) {
-        queue.textChannel.send(`A fatal error occurred: ${error.message}`);
+        queue.textChannel.send(`Music playback encountered an error: ${error.message}`);
     }
 
     logError('DisTube Error:', error);
