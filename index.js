@@ -111,11 +111,15 @@ client.on('messageCreate', async (message) => {
                 queue = distube.getQueue(voiceChannel);
                 if (!queue) return message.channel.send('The queue is empty.');
 
-                const queueString = queue.songs
-                    .map((song, index) => `${index + 1}. ${song.name} - \`${song.formattedDuration}\``)
-                    .join('\n');
+                var queueString = `**Current Queue:**\n` +
+                    queue.songs
+                        .map((song, index) => `${index + 1}. ${song.name} - \`${song.formattedDuration}\``)
+                        .join('\n');
 
-                message.channel.send(`**Current Queue:**\n${queueString}`);
+                // Respect Discord message limit (2000);
+                queueString = queueString.length >= 2000 ? `${queueString.slice(0, 1997)}...` : queueString;
+
+                message.channel.send(`${queueString}`);
 
                 break;
             case 'help':
