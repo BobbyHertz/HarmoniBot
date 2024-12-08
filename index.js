@@ -1,7 +1,7 @@
 // Package Dependencies
 const { Client, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
-const { YtDlpPlugin } = require('@distube/yt-dlp');
+const { YouTubePlugin } = require('@distube/youtube');
 const ffmpegPath = require('ffmpeg-static');
 
 // Local Project Dependencies
@@ -20,7 +20,7 @@ const client = new Client({
 });
 
 const distube = new DisTube(client, {
-    plugins: [new YtDlpPlugin()],
+    plugins: [new YouTubePlugin()],
     ffmpeg: {
         path: ffmpegPath
     }
@@ -49,12 +49,11 @@ client.on('messageCreate', async (message) => {
         switch (command) {
             case 'play':
 
-                const url = args[0];
-                if (!url) return message.reply('Please provide a YouTube URL.');
+                if (args.length < 1) return message.reply('Please provide a YouTube URL or search query.');
 
                 const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
 
-                await distube.play(voiceChannel, url, {
+                await distube.play(voiceChannel, args.join(' '), {
                     textChannel: message.channel,
                     member: message.member,
                 });
@@ -67,14 +66,14 @@ client.on('messageCreate', async (message) => {
                 queue = distube.getQueue(voiceChannel);
                 if (!queue) return message.reply('There is no music playing to stop.');
 
-                queue.stop(); // Stops playback and clears the queue
+                queue.stop();
 
                 message.channel.send('Music has been stopped, and the queue has been cleared.');
 
                 break;
             case 'kill':
 
-                distube.voices.get(voiceChannel.guild.id)?.leave(); // Makes the bot leave the voice channel
+                distube.voices.get(voiceChannel.guild.id)?.leave();
 
                 message.channel.send('Goodbye!');
 
