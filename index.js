@@ -1,7 +1,10 @@
+// Dependencies
 const { Client, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const { YtDlpPlugin } = require('@distube/yt-dlp');
+const ffmpegPath = require('ffmpeg-static');
 
+// Environment variables
 require('dotenv').config();
 
 const client = new Client({
@@ -14,7 +17,10 @@ const client = new Client({
 });
 
 const distube = new DisTube(client, {
-    plugins: [new YtDlpPlugin()]
+    plugins: [new YtDlpPlugin()],
+    ffmpeg: {
+        path: ffmpegPath
+    }
 });
 
 client.once('ready', () => {

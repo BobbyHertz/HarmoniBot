@@ -41,6 +41,6 @@ You should also set the following Privileged Gateway Intents, right above the Bo
 - [Node.js](https://nodejs.org/) 18.17.0 or higher
 - @distube/yt-dlp
 - dotenv
+- ffmpeg-static
 - libsodium-wrappers
 - opusscript
-- [ffmpeg.exe](https://www.ffmpeg.org/) - (executable included in source)
