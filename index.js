@@ -125,7 +125,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
 
                 message.channel.send('Available commands are:\n\n' +
-                    '- !play {url} - Plays a YouTube URL or adds it to the queue if a song is playing.\n' +
+                    '- !play {url|search term} - Plays a YouTube URL or searches for a song using search terms. The song is added to the queue if a song is playing.\n' +
                     '- !stop - Stops any current music and clears the queue.\n' +
                     '- !kill - Disconnects the bot from the voice channel.\n' +
                     '- !skip - Plays the next song in the queue.\n' +
