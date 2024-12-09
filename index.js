@@ -36,13 +36,19 @@ client.on('messageCreate', async (message) => {
     const args = message.content.slice(1).trim().split(/ +/g);
     const command = args.shift()?.toLowerCase();
 
-    const voiceChannel = message.member?.voice?.channel;
-    if (!voiceChannel) {
+    const userVoiceChannel = message.member?.voice?.channel;
+    if (!userVoiceChannel) {
         return message.reply('You must be in a voice channel to use commands.');
     }
 
+    const queue = distube.getQueue(userVoiceChannel);
+    if (queue &&
+        queue?.voice?.channel.id != userVoiceChannel.id &&
+        command != 'help') {
+        return message.reply(`You must be in the bot's voice channel \`${queue?.voice?.channel.name}\` to use this command.`);
+    }
+
     try {
-        var queue;
 
         logMessage(`${message.author.displayName} issued command "${message.content}"`);
 
@@ -53,7 +59,7 @@ client.on('messageCreate', async (message) => {
 
                 const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
 
-                await distube.play(voiceChannel, args.join(' '), {
+                await distube.play(userVoiceChannel, args.join(' '), {
                     textChannel: message.channel,
                     member: message.member,
                 });
@@ -63,7 +69,6 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'stop':
 
-                queue = distube.getQueue(voiceChannel);
                 if (!queue) return message.reply('There is no music playing to stop.');
 
                 queue.stop();
@@ -73,14 +78,12 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'kill':
 
-                distube.voices.get(voiceChannel.guild.id)?.leave();
+                distube.voices.get(userVoiceChannel.guild.id)?.leave();
 
                 message.channel.send('Goodbye!');
 
                 break;
             case 'skip':
-
-                queue = distube.getQueue(voiceChannel);
 
                 if (!queue) return message.reply('The queue is empty, so there is nothing to skip to.');
 
@@ -94,8 +97,6 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'rewind':
 
-                queue = distube.getQueue(voiceChannel);
-
                 if (!queue) return message.reply('The queue is empty, so there is nothing to rewind to.');
 
                 if (queue.previousSongs.length <= 0) {
@@ -108,7 +109,6 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'queue':
 
-                queue = distube.getQueue(voiceChannel);
                 if (!queue) return message.channel.send('The queue is empty.');
 
                 var queueString = `**Current Queue:**\n` +
