@@ -67,6 +67,26 @@ client.on('messageCreate', async (message) => {
                 loadingMsg.delete();
 
                 break;
+            case 'pause':
+
+                if (!queue) return message.reply('The queue is empty, so there is nothing to pause.');
+                if (queue.paused) return message.reply('Music is already paused.');
+
+                queue.pause();
+
+                message.channel.send('Playback has been paused.');
+
+                break;
+            case 'resume':
+
+                if (!queue) return message.reply('The queue is empty, so there is nothing to resume.');
+                if (!queue.paused) return message.reply('Music is already playing.');
+
+                queue.resume();
+
+                message.channel.send('Playback resumed.');
+
+                break;
             case 'stop':
 
                 if (!queue) return message.reply('There is no music playing to stop.');
@@ -126,6 +146,8 @@ client.on('messageCreate', async (message) => {
 
                 message.channel.send('```Available commands are:\n\n' +
                     '!play {url|search term} - Plays a YouTube URL or search term. The song is added to the queue if a song is playing.\n' +
+                    '!pause - Pauses current playback.\n' +
+                    '!resume - Resumes playback.\n' +
                     '!stop - Stops any current music and clears the queue.\n' +
                     '!kill - Disconnects the bot from the voice channel.\n' +
                     '!skip - Plays the next song in the queue.\n' +
