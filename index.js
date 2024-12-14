@@ -27,6 +27,8 @@ const distube = new DisTube(client, {
     }
 });
 
+var timeoutMinutes = 5;
+var inactivityTimeout = null;
 var debugLoggingMode = 'off';
 
 client.once('ready', () => {
@@ -167,9 +169,24 @@ client.on('messageCreate', async (message) => {
                 }
 
                 break;
+            case 'timeout':
+
+                if (args.length < 1) return message.reply('Setting a timeout requires a value.');
+
+                const number = parseInt(args[0]);
+                if (!isNaN(number) && number >= 0 && number <= 60) {
+                    timeoutMinutes = number;
+
+                    message.channel.send(`Inactivity timeout set to \`${mode.toUpperCase()} minutes\`.`);
+                } else {
+                    return message.reply('Invalid timeout value.');
+                }
+
+                break;
             case 'help':
 
                 message.channel.send('```Available commands are:\n\n' +
+                    'Music:\n' +
                     '!play {url|search term} - Plays a YouTube URL or search term. The song is added to the queue if a song is playing.\n' +
                     '!pause - Pauses current playback.\n' +
                     '!resume - Resumes playback.\n' +
@@ -177,9 +194,11 @@ client.on('messageCreate', async (message) => {
                     '!kill - Disconnects the bot from the voice channel.\n' +
                     '!skip - Plays the next song in the queue.\n' +
                     '!rewind - Plays the previous song in the queue.\n' +
-                    '!queue - Displays the current queue.\n' +
+                    '!queue - Displays the current queue.\n\n' +
+                    'Other:\n' +
+                    '!help - Displays the list of available commands.\n' +
                     '!debug {off|on|verbose} - Sets the desired debug logging mode.\n' +
-                    '!help - Displays the list of available commands.```');
+                    '!timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.```');
 
                 break;
         }
@@ -195,6 +214,8 @@ distube.on('playSong', (queue, song) => {
 });
 
 distube.on('addSong', (queue, song) => {
+    triggerActivity();
+
     if (queue.songs.length > 1) {
         queue.textChannel.send(`Added \`${song.name}\` - \`${song.formattedDuration}\` to the queue!`);
         logMessage(`Added song: ${song.name} - ${song.formattedDuration}`);
@@ -203,6 +224,8 @@ distube.on('addSong', (queue, song) => {
 
 distube.on('finish', () => {
     logMessage(`Finished song queue`);
+
+    triggerInactivity();
 });
 
 distube.on('error', (error, queue) => {
@@ -224,5 +247,23 @@ distube.on('ffmpegDebug', (message) => {
         logMessage(`FFMPEG DEBUG: ${message}`);
     }
 });
+
+function triggerInactivity() {
+    inactivityTimeout = setTimeout(function () {
+        logMessage(`Inactivity timeout reached (${timeoutMinutes} minutes). Bot disconnected.`);
+        message.channel.send(`Looks like you're done playing music for now. Goodbye!`);
+
+        distube.voices.get(userVoiceChannel.guild.id)?.leave();
+
+        inactivityTimeout = null;
+    }, timeoutMinutes * 60 * 1000);
+}
+
+function triggerActivity() {
+    if (inactivityTimeout) {
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = null;
+    }
+}
 
 client.login(process.env.DISCORD_TOKEN);

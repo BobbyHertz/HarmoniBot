@@ -6,6 +6,7 @@ This bot requires no YouTube login, and avoids the hassle of requiring numerous 
 # Features
 Supports the following commands:
 
+Music:
 - !play {url|search term} - Plays a YouTube URL or search term. The song is added to the queue if a song is playing.
 - !pause - Pauses current playback.
 - !resume - Resumes playback.
@@ -14,8 +15,11 @@ Supports the following commands:
 - !skip - Plays the next song in the queue.
 - !rewind - Plays the previous song in the queue.
 - !queue - Displays the current queue.
-- !debug {off|on|verbose} - Sets the desired debug logging mode.
+
+Other:
 - !help - Displays the list of available commands.
+- !debug {off|on|verbose} - Sets the desired debug logging mode.
+- !timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.
 
 # Setup
 1) Install [Node.js](https://nodejs.org/).
