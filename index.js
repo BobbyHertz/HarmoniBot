@@ -177,7 +177,7 @@ client.on('messageCreate', async (message) => {
                 if (!isNaN(number) && number >= 0 && number <= 60) {
                     timeoutMinutes = number;
 
-                    message.channel.send(`Inactivity timeout set to \`${mode.toUpperCase()} minutes\`.`);
+                    message.channel.send(`Inactivity timeout set to \`${number} minutes\`.`);
                 } else {
                     return message.reply('Invalid timeout value.');
                 }
@@ -222,10 +222,10 @@ distube.on('addSong', (queue, song) => {
     }
 });
 
-distube.on('finish', () => {
+distube.on('finish', (queue) => {
     logMessage(`Finished song queue`);
 
-    triggerInactivity();
+    triggerInactivity(queue.textChannel, queue.voice.channel);
 });
 
 distube.on('error', (error, queue) => {
@@ -248,12 +248,12 @@ distube.on('ffmpegDebug', (message) => {
     }
 });
 
-function triggerInactivity() {
+function triggerInactivity(textChannel, voiceChannel) {
     inactivityTimeout = setTimeout(function () {
         logMessage(`Inactivity timeout reached (${timeoutMinutes} minutes). Bot disconnected.`);
-        message.channel.send(`Looks like you're done playing music for now. Goodbye!`);
+        textChannel.send(`Looks like you're done playing music for now. Goodbye!`);
 
-        distube.voices.get(userVoiceChannel.guild.id)?.leave();
+        distube.voices.get(voiceChannel.guild.id)?.leave();
 
         inactivityTimeout = null;
     }, timeoutMinutes * 60 * 1000);
