@@ -14,6 +14,7 @@ Supports the following commands:
 - !skip - Plays the next song in the queue.
 - !rewind - Plays the previous song in the queue.
 - !queue - Displays the current queue.
+- !debug {off|on|verbose} - Sets the desired debug logging mode.
 - !help - Displays the list of available commands.
 
 # Setup

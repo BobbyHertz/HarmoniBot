@@ -22,9 +22,12 @@ const client = new Client({
 const distube = new DisTube(client, {
     plugins: [new YouTubePlugin()],
     ffmpeg: {
-        path: ffmpegPath
+        path: ffmpegPath,
+        options: "-loglevel debug"
     }
 });
+
+var debugLoggingMode = 'off';
 
 client.once('ready', () => {
     logMessage(`${client.user.tag} is online and ready!`);
@@ -142,6 +145,28 @@ client.on('messageCreate', async (message) => {
                 message.channel.send(`${queueString}`);
 
                 break;
+            case 'debug':
+
+                if (args.length < 1) return message.reply('Setting a debug logging mode requires a value.');
+
+                const mode = args[0].toLowerCase();
+
+                switch (mode) {
+                    case 'off':
+                    case 'on':
+                    case 'verbose':
+
+                        debugLoggingMode = mode;
+
+                        message.channel.send(`Debug logging mode set to \`${mode.toUpperCase()}\`.`);
+
+                        break;
+                    default:
+
+                        return message.reply('Invalid debug mode value.');
+                }
+
+                break;
             case 'help':
 
                 message.channel.send('```Available commands are:\n\n' +
@@ -153,6 +178,7 @@ client.on('messageCreate', async (message) => {
                     '!skip - Plays the next song in the queue.\n' +
                     '!rewind - Plays the previous song in the queue.\n' +
                     '!queue - Displays the current queue.\n' +
+                    '!debug {off|on|verbose} - Sets the desired debug logging mode.\n' +
                     '!help - Displays the list of available commands.```');
 
                 break;
@@ -185,6 +211,18 @@ distube.on('error', (error, queue) => {
     }
 
     logError('DisTube Error:', error);
+});
+
+distube.on('debug', (message) => {
+    if (debugLoggingMode == 'on' || debugLoggingMode == 'verbose') {
+        logMessage(`DEBUG: ${message}`);
+    }
+});
+
+distube.on('ffmpegDebug', (message) => {
+    if (debugLoggingMode == 'verbose') {
+        logMessage(`FFMPEG DEBUG: ${message}`);
+    }
 });
 
 client.login(process.env.DISCORD_TOKEN);
