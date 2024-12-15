@@ -22,11 +22,20 @@ Other:
 - !timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.
 
 # Setup
+
+## Windows
 1) Install [Node.js](https://nodejs.org/).
 2) Get your [Discord bot token](https://www.writebots.com/discord-bot-token/) from the Discord [Application Developer site](https://discord.com/developers/applications).
 3) Create a file called ".env" in the main project folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
 4) Using the same website you retrieved the bot token from, create an invite link to invite your bot to your Discord server.
 5) Run "runbot.bat" and enjoy!
+
+## Linux (Docker)
+1) Get your [Discord bot token](https://www.writebots.com/discord-bot-token/) from the Discord [Application Developer site](https://discord.com/developers/applications).
+2) Create a file called ".env" in the main project folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
+3) Copy the required contents of the project folder (Dockerfile, index.js, logger.js, package.json, and the .env file you created in the previous step) into a folder on your server (ex. /HarmoniBot).
+4) Change your running directory to this newly created folder and run the following command to create the Docker image: `docker build -t harmonibot .`
+5) Once complete, run this command to create and run the Docker container: `docker run -d --name harmonibot-container harmonibot`
 
 # Recommended Discord Bot Permissions
 When creating the bot's invite link to your Discord server, you will need to specify the permissions it needs. You should set the following permissions:
