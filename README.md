@@ -23,19 +23,25 @@ Other:
 
 # Setup
 
-## Windows
-1) Install [Node.js](https://nodejs.org/).
-2) Get your [Discord bot token](https://www.writebots.com/discord-bot-token/) from the Discord [Application Developer site](https://discord.com/developers/applications).
-3) Create a file called ".env" in the main project folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
-4) Using the same website you retrieved the bot token from, create an invite link to invite your bot to your Discord server.
-5) Run "runbot.bat" and enjoy!
+There are two parts to the setup. First, you must create a bot user to add to your Discord. Then, you run the application in your preferred environment using the bot's token.
 
-## Linux (Docker)
+## Discord Bot User Setup
+
 1) Get your [Discord bot token](https://www.writebots.com/discord-bot-token/) from the Discord [Application Developer site](https://discord.com/developers/applications).
-2) Create a file called ".env" in the main project folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
-3) Copy the required contents of the project folder (Dockerfile, index.js, logger.js, package.json, and the .env file you created in the previous step) into a folder on your server (ex. /HarmoniBot).
-4) Change your running directory to this newly created folder and run the following command to create the Docker image: `docker build -t harmonibot .`
-5) Once complete, run this command to create and run the Docker container: `docker run -d --name harmonibot-container harmonibot`
+2) Download the project folder.
+3) Create a file called ".env" (no name, just the extension) in this folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
+4) Using the same website you retrieved the bot token from, create an invite link to invite your bot to your Discord server.
+5) The bot will be added to your server but not yet functional. Proceed with either the Windows or Docker installation steps below depending on how you are hosting the bot.
+
+## Windows Instructions
+1) Install [Node.js](https://nodejs.org/).
+2) Run "runbot.bat" and enjoy!
+
+## Linux (Docker) Instructions
+1) Install [Docker](https://docs.docker.com/engine/install/).
+2) Copy the required contents of the project folder (Dockerfile, index.js, logger.js, package.json, and the .env file you created in the previous step) into a folder on your server (ex. /HarmoniBot).
+3) Change your running directory to this newly created folder and run the following command to create the Docker image: `docker build -t harmonibot .`
+4) Once complete, run this command to create and run the Docker container: `docker run -d --name harmonibot-container harmonibot`
 
 # Recommended Discord Bot Permissions
 When creating the bot's invite link to your Discord server, you will need to specify the permissions it needs. You should set the following permissions:
