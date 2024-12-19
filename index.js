@@ -100,6 +100,8 @@ client.on('messageCreate', async (message) => {
 
                 message.channel.send('Music has been stopped, and the queue has been cleared.');
 
+                triggerInactivity(queue.textChannel, queue.voice.channel);
+
                 break;
             case 'kill':
 
