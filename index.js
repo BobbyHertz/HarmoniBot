@@ -211,13 +211,13 @@ client.on('messageCreate', async (message) => {
 });
 
 distube.on('playSong', (queue, song) => {
+    triggerActivity();
+
     queue.textChannel.send(`🎶 Playing \`${song.name}\` - \`${song.formattedDuration}\``);
     logMessage(`Playing song: ${song.name} - ${song.formattedDuration}`);
 });
 
 distube.on('addSong', (queue, song) => {
-    triggerActivity();
-
     if (queue.songs.length > 1) {
         queue.textChannel.send(`Added \`${song.name}\` - \`${song.formattedDuration}\` to the queue!`);
         logMessage(`Added song: ${song.name} - ${song.formattedDuration}`);
