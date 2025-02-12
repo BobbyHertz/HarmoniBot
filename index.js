@@ -5,10 +5,9 @@ const { YouTubePlugin } = require('@distube/youtube');
 const ffmpegPath = require('ffmpeg-static');
 
 // Local Project Dependencies
-const { logMessage, logError } = require('./logger');
-
-// Environment variables
-require('dotenv').config();
+const { logMessage, logError } = require('./libs/logger');
+const { getTimeoutMinutes, setTimeoutMinutes, getInactivityTimeout, setInactivityTimeout } = require('./libs/serverSettings');
+const { getDiscordToken, getBotAdminId, getDebugLoggingMode, setDebugLoggingMode } = require('./libs/adminSettings');
 
 const client = new Client({
     intents: [
@@ -27,10 +26,6 @@ const distube = new DisTube(client, {
     }
 });
 
-var timeoutMinutes = 5;
-var inactivityTimeout = null;
-var debugLoggingMode = 'off';
-
 client.once('ready', () => {
     logMessage(`${client.user.tag} is online and ready!`);
 });
@@ -46,6 +41,7 @@ client.on('messageCreate', async (message) => {
         return message.reply('You must be in a voice channel to use commands.');
     }
 
+    const serverId = userVoiceChannel.guild.id;
     const queue = distube.getQueue(userVoiceChannel);
     if (queue &&
         queue?.voice?.channel.id != userVoiceChannel.id &&
@@ -100,12 +96,12 @@ client.on('messageCreate', async (message) => {
 
                 message.channel.send('Music has been stopped, and the queue has been cleared.');
 
-                triggerInactivity(queue.textChannel, queue.voice.channel);
+                triggerInactivity(serverId, queue.textChannel);
 
                 break;
             case 'kill':
 
-                distube.voices.get(userVoiceChannel.guild.id)?.leave();
+                distube.voices.get(serverId)?.leave();
 
                 message.channel.send('Goodbye!');
 
@@ -151,6 +147,8 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'debug':
 
+                if (message.author.id != getBotAdminId()) return message.reply(`Only the bot administrator may set a debug logging mode.`);
+
                 if (args.length < 1) return message.reply('Setting a debug logging mode requires a value.');
 
                 const mode = args[0].toLowerCase();
@@ -160,7 +158,7 @@ client.on('messageCreate', async (message) => {
                     case 'on':
                     case 'verbose':
 
-                        debugLoggingMode = mode;
+                        setDebugLoggingMode(mode);
 
                         message.channel.send(`Debug logging mode set to \`${mode.toUpperCase()}\`.`);
 
@@ -177,7 +175,7 @@ client.on('messageCreate', async (message) => {
 
                 const number = parseInt(args[0]);
                 if (!isNaN(number) && number >= 0 && number <= 60) {
-                    timeoutMinutes = number;
+                    setTimeoutMinutes(serverId, number);
 
                     message.channel.send(`Inactivity timeout set to \`${number} minutes\`.`);
                 } else {
@@ -199,7 +197,6 @@ client.on('messageCreate', async (message) => {
                     '!queue - Displays the current queue.\n\n' +
                     'Other:\n' +
                     '!help - Displays the list of available commands.\n' +
-                    '!debug {off|on|verbose} - Sets the desired debug logging mode.\n' +
                     '!timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.```');
 
                 break;
@@ -211,7 +208,7 @@ client.on('messageCreate', async (message) => {
 });
 
 distube.on('playSong', (queue, song) => {
-    triggerActivity();
+    triggerActivity(queue.id);
 
     queue.textChannel.send(`🎶 Playing \`${song.name}\` - \`${song.formattedDuration}\``);
     logMessage(`Playing song: ${song.name} - ${song.formattedDuration}`);
@@ -227,7 +224,7 @@ distube.on('addSong', (queue, song) => {
 distube.on('finish', (queue) => {
     logMessage(`Finished song queue`);
 
-    triggerInactivity(queue.textChannel, queue.voice.channel);
+    triggerInactivity(queue.id, queue.textChannel);
 });
 
 distube.on('error', (error, queue) => {
@@ -239,33 +236,47 @@ distube.on('error', (error, queue) => {
 });
 
 distube.on('debug', (message) => {
+    let debugLoggingMode = getDebugLoggingMode();
+
     if (debugLoggingMode == 'on' || debugLoggingMode == 'verbose') {
         logMessage(`DEBUG: ${message}`);
     }
 });
 
 distube.on('ffmpegDebug', (message) => {
+    let debugLoggingMode = getDebugLoggingMode();
+
     if (debugLoggingMode == 'verbose') {
         logMessage(`FFMPEG DEBUG: ${message}`);
     }
 });
 
-function triggerInactivity(textChannel, voiceChannel) {
-    inactivityTimeout = setTimeout(function () {
-        logMessage(`Inactivity timeout reached (${timeoutMinutes} minutes). Bot disconnected.`);
+function triggerInactivity(serverId, textChannel) {
+    let minutes = getTimeoutMinutes(serverId);
+
+    let inactivityTimeout = createInactivityTimeout(serverId, textChannel, minutes);
+
+    setInactivityTimeout(serverId, inactivityTimeout);
+};
+
+function createInactivityTimeout(serverId, textChannel, minutes) {
+    return setTimeout(function () {
+        logMessage(`Inactivity timeout reached (${minutes} minutes). Bot disconnected.`);
         textChannel.send(`Looks like you're done playing music for now. Goodbye!`);
 
-        distube.voices.get(voiceChannel.guild.id)?.leave();
+        distube.voices.get(serverId)?.leave();
 
-        inactivityTimeout = null;
-    }, timeoutMinutes * 60 * 1000);
-}
+        setInactivityTimeout(serverId, null);
+    }, minutes * 60 * 1000);
+};
 
-function triggerActivity() {
+function triggerActivity(serverId) {
+    let inactivityTimeout = getInactivityTimeout(serverId);
+
     if (inactivityTimeout) {
         clearTimeout(inactivityTimeout);
-        inactivityTimeout = null;
+        setInactivityTimeout(serverId, null);
     }
-}
+};
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(getDiscordToken());

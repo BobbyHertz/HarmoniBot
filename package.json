@@ -1,6 +1,6 @@
 {
   "name": "harmonibot",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
   "description": "",
   "dependencies": {
     "@distube/youtube": "^1.0.4",
-    "@distube/ytdl-core": "4.15.9",
+    "@distube/ytdl-core": "4.16.3",
     "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.15",
