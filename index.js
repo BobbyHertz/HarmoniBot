@@ -38,7 +38,7 @@ client.on('messageCreate', async (message) => {
 
     const userVoiceChannel = message.member?.voice?.channel;
     if (!userVoiceChannel) {
-        return message.reply('You must be in a voice channel to use commands.');
+        return message.reply(`You must be in a voice channel to use commands.`);
     }
 
     const server = userVoiceChannel.guild;
@@ -56,7 +56,7 @@ client.on('messageCreate', async (message) => {
         switch (command) {
             case 'play':
 
-                if (args.length < 1) return message.reply('Please provide a YouTube URL or search query.');
+                if (args.length < 1) return message.reply(`Please provide a YouTube URL or search query.`);
 
                 const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
 
@@ -70,31 +70,31 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'pause':
 
-                if (!queue) return message.reply('The queue is empty, so there is nothing to pause.');
-                if (queue.paused) return message.reply('Music is already paused.');
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to pause.`);
+                if (queue.paused) return message.reply(`Music is already paused.`);
 
                 queue.pause();
 
-                message.channel.send('Playback has been paused.');
+                message.channel.send(`Playback has been paused.`);
 
                 break;
             case 'resume':
 
-                if (!queue) return message.reply('The queue is empty, so there is nothing to resume.');
-                if (!queue.paused) return message.reply('Music is already playing.');
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to resume.`);
+                if (!queue.paused) return message.reply(`Music is already playing.`);
 
                 queue.resume();
 
-                message.channel.send('Playback resumed.');
+                message.channel.send(`Playback resumed.`);
 
                 break;
             case 'stop':
 
-                if (!queue) return message.reply('There is no music playing to stop.');
+                if (!queue) return message.reply(`There is no music playing to stop.`);
 
                 queue.stop();
 
-                message.channel.send('Music has been stopped, and the queue has been cleared.');
+                message.channel.send(`Music has been stopped, and the queue has been cleared.`);
 
                 triggerInactivity(server, queue.textChannel);
 
@@ -103,15 +103,15 @@ client.on('messageCreate', async (message) => {
 
                 distube.voices.get(server.id)?.leave();
 
-                message.channel.send('Goodbye!');
+                message.channel.send(`Goodbye!`);
 
                 break;
             case 'skip':
 
-                if (!queue) return message.reply('The queue is empty, so there is nothing to skip to.');
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to skip to.`);
 
                 if (queue.songs.length <= 1) {
-                    return message.reply('You are at the end of the queue, so there is nothing to skip to.');
+                    return message.reply(`You are at the end of the queue, so there is nothing to skip to.`);
                 }
 
                 await queue.skip();
@@ -120,10 +120,10 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'rewind':
 
-                if (!queue) return message.reply('The queue is empty, so there is nothing to rewind to.');
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to rewind to.`);
 
                 if (queue.previousSongs.length <= 0) {
-                    return message.reply('You are at the beginning of the queue, so there is nothing to rewind to.');
+                    return message.reply(`You are at the beginning of the queue, so there is nothing to rewind to.`);
                 }
 
                 await queue.previous();
@@ -132,7 +132,7 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'queue':
 
-                if (!queue) return message.channel.send('The queue is empty.');
+                if (!queue) return message.channel.send(`The queue is empty.`);
 
                 var queueString = `**Current Queue:**\n` +
                     queue.songs
@@ -149,7 +149,7 @@ client.on('messageCreate', async (message) => {
 
                 if (message.author.id != getBotAdminId()) return message.reply(`Only the bot administrator may set a debug logging mode.`);
 
-                if (args.length < 1) return message.reply('Setting a debug logging mode requires a value.');
+                if (args.length < 1) return message.reply(`Setting a debug logging mode requires a value.`);
 
                 const mode = args[0].toLowerCase();
 
@@ -165,13 +165,13 @@ client.on('messageCreate', async (message) => {
                         break;
                     default:
 
-                        return message.reply('Invalid debug mode value.');
+                        return message.reply(`Invalid debug mode value.`);
                 }
 
                 break;
             case 'timeout':
 
-                if (args.length < 1) return message.reply('Setting a timeout requires a value.');
+                if (args.length < 1) return message.reply(`Setting a timeout requires a value.`);
 
                 const number = parseInt(args[0]);
                 if (!isNaN(number) && number >= 0 && number <= 60) {
@@ -179,7 +179,7 @@ client.on('messageCreate', async (message) => {
 
                     message.channel.send(`Inactivity timeout set to \`${number} minutes\`.`);
                 } else {
-                    return message.reply('Invalid timeout value.');
+                    return message.reply(`Invalid timeout value.`);
                 }
 
                 break;
