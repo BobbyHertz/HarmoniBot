@@ -41,7 +41,7 @@ client.on('messageCreate', async (message) => {
         return message.reply('You must be in a voice channel to use commands.');
     }
 
-    const serverId = userVoiceChannel.guild.id;
+    const server = userVoiceChannel.guild;
     const queue = distube.getQueue(userVoiceChannel);
     if (queue &&
         queue?.voice?.channel.id != userVoiceChannel.id &&
@@ -51,7 +51,7 @@ client.on('messageCreate', async (message) => {
 
     try {
 
-        logMessage(`${message.author.displayName} issued command "${message.content}"`);
+        logMessage(`${server.name}: ${message.author.displayName} issued command "${message.content}"`);
 
         switch (command) {
             case 'play':
@@ -96,12 +96,12 @@ client.on('messageCreate', async (message) => {
 
                 message.channel.send('Music has been stopped, and the queue has been cleared.');
 
-                triggerInactivity(serverId, queue.textChannel);
+                triggerInactivity(server, queue.textChannel);
 
                 break;
             case 'kill':
 
-                distube.voices.get(serverId)?.leave();
+                distube.voices.get(server.id)?.leave();
 
                 message.channel.send('Goodbye!');
 
@@ -175,7 +175,7 @@ client.on('messageCreate', async (message) => {
 
                 const number = parseInt(args[0]);
                 if (!isNaN(number) && number >= 0 && number <= 60) {
-                    setTimeoutMinutes(serverId, number);
+                    setTimeoutMinutes(server.id, number);
 
                     message.channel.send(`Inactivity timeout set to \`${number} minutes\`.`);
                 } else {
@@ -203,36 +203,44 @@ client.on('messageCreate', async (message) => {
         }
     } catch (error) {
         message.reply(`An error occurred while processing your command: ${error.message}`);
-        logError(`Error in command "${message.content}":`, error);
+        logError(`${server.name}: Error in command "${message.content}":`, error);
     }
 });
 
 distube.on('playSong', (queue, song) => {
-    triggerActivity(queue.id);
+    const server = getServerInfo(queue);
+    triggerActivity(server);
 
     queue.textChannel.send(`🎶 Playing \`${song.name}\` - \`${song.formattedDuration}\``);
-    logMessage(`Playing song: ${song.name} - ${song.formattedDuration}`);
+    logMessage(`${server.name}: Playing song: ${song.name} - ${song.formattedDuration}`);
 });
 
 distube.on('addSong', (queue, song) => {
     if (queue.songs.length > 1) {
+        const server = getServerInfo(queue);
+
         queue.textChannel.send(`Added \`${song.name}\` - \`${song.formattedDuration}\` to the queue!`);
-        logMessage(`Added song: ${song.name} - ${song.formattedDuration}`);
+        logMessage(`${server.name}: Added song: ${song.name} - ${song.formattedDuration}`);
     }
 });
 
 distube.on('finish', (queue) => {
-    logMessage(`Finished song queue`);
+    const server = getServerInfo(queue);
 
-    triggerInactivity(queue.id, queue.textChannel);
+    logMessage(`${server.name}: Finished song queue`);
+
+    triggerInactivity(server, queue.textChannel);
 });
 
 distube.on('error', (error, queue) => {
     if (queue && queue.textChannel) {
-        queue.textChannel.send(`Music playback encountered an error: ${error.message}`);
-    }
+        const server = getServerInfo(queue);
 
-    logError('DisTube Error:', error);
+        queue.textChannel.send(`Music playback encountered an error: ${error.message}`);
+        logError(`${server.name}: DisTube Error:`, error);
+    } else {
+        logError(`DisTube Error:`, error);
+    }
 });
 
 distube.on('debug', (message) => {
@@ -251,32 +259,36 @@ distube.on('ffmpegDebug', (message) => {
     }
 });
 
-function triggerInactivity(serverId, textChannel) {
-    let minutes = getTimeoutMinutes(serverId);
-
-    let inactivityTimeout = createInactivityTimeout(serverId, textChannel, minutes);
-
-    setInactivityTimeout(serverId, inactivityTimeout);
+function getServerInfo(queue) {
+    return queue.textChannel.guild;
 };
 
-function createInactivityTimeout(serverId, textChannel, minutes) {
-    return setTimeout(function () {
-        logMessage(`Inactivity timeout reached (${minutes} minutes). Bot disconnected.`);
-        textChannel.send(`Looks like you're done playing music for now. Goodbye!`);
-
-        distube.voices.get(serverId)?.leave();
-
-        setInactivityTimeout(serverId, null);
-    }, minutes * 60 * 1000);
-};
-
-function triggerActivity(serverId) {
-    let inactivityTimeout = getInactivityTimeout(serverId);
+function triggerActivity(server) {
+    let inactivityTimeout = getInactivityTimeout(server.id);
 
     if (inactivityTimeout) {
         clearTimeout(inactivityTimeout);
-        setInactivityTimeout(serverId, null);
+        setInactivityTimeout(server.id, null);
     }
+};
+
+function triggerInactivity(server, textChannel) {
+    let minutes = getTimeoutMinutes(server.id);
+
+    let inactivityTimeout = createInactivityTimeout(server, textChannel, minutes);
+
+    setInactivityTimeout(server.id, inactivityTimeout);
+};
+
+function createInactivityTimeout(server, textChannel, minutes) {
+    return setTimeout(function () {
+        logMessage(`${server.name}: Inactivity timeout reached (${minutes} minutes). Bot disconnected.`);
+        textChannel.send(`Looks like you're done playing music for now. Goodbye!`);
+
+        distube.voices.get(server.id)?.leave();
+
+        setInactivityTimeout(server.id, null);
+    }, minutes * 60 * 1000);
 };
 
 client.login(getDiscordToken());
