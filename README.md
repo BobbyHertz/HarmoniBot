@@ -32,7 +32,7 @@ There are two parts to the setup. First, you must create a bot user to add to yo
 1) Get your [Discord bot token](https://www.writebots.com/discord-bot-token/) from the Discord [Application Developer site](https://discord.com/developers/applications).
 2) Download the project folder.
 3) Create a file called ".env" (no name, just the extension) in this folder, with the file's content being a single line of text: `DISCORD_TOKEN={YourTokenGoesHere}`. Replace "{YourTokenGoesHere}," including the brackets, with the token you generated.
-    - Optionally, add another line: `BOT_ADMIN_ID={YourDiscordUserId}`. Replace "{YourDiscordUserId}," with the ID of your Discord user. This will allow your user to have access to the Debug logging commands.
+    - Optionally, add another line: `BOT_ADMIN_ID={YourDiscordUserId}`. Replace "{YourDiscordUserId}," with the [ID of your Discord user](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID). This will allow your user to have access to the Debug logging commands.
 4) Using the same website you retrieved the bot token from, create an invite link to invite your bot to your Discord server.
 5) The bot will be added to your server but not yet functional. Proceed with either the Windows or Docker installation steps below depending on how you are hosting the bot.
 
