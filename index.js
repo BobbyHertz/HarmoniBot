@@ -2,6 +2,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const { YouTubePlugin } = require('@distube/youtube');
+const { SpotifyPlugin } = require("@distube/spotify");
 const ffmpegPath = require('ffmpeg-static');
 
 // Local Project Dependencies
@@ -19,7 +20,10 @@ const client = new Client({
 });
 
 const distube = new DisTube(client, {
-    plugins: [new YouTubePlugin()],
+    plugins: [
+        new YouTubePlugin(),
+        new SpotifyPlugin()
+    ],
     ffmpeg: {
         path: ffmpegPath,
         options: "-loglevel debug"
@@ -56,7 +60,7 @@ client.on('messageCreate', async (message) => {
         switch (command) {
             case 'play':
 
-                if (args.length < 1) return message.reply(`Please provide a YouTube URL or search query.`);
+                if (args.length < 1) return message.reply(`Please provide a YouTube/Spotify URL or search query.`);
 
                 const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
 
@@ -187,7 +191,7 @@ client.on('messageCreate', async (message) => {
 
                 message.channel.send('```Available commands are:\n\n' +
                     'Music:\n' +
-                    '!play {url|search term} - Plays a YouTube URL or search term. The song is added to the queue if a song is playing.\n' +
+                    '!play {url|search term} - Plays a YouTube/Spotify URL or search term. The song is added to the queue if a song is playing.\n' +
                     '!pause - Pauses current playback.\n' +
                     '!resume - Resumes playback.\n' +
                     '!stop - Stops any current music and clears the queue.\n' +
