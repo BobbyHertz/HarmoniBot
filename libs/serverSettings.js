@@ -60,7 +60,7 @@ function addServer(serverId) {
     var newServer =
     {
         id: serverId,
-        timeoutMinutes: 5,
+        timeoutMinutes: 0,
         inactivityTimeout: null
     };
 
