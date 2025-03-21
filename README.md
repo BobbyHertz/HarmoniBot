@@ -7,7 +7,7 @@ This bot requires no YouTube login, and avoids the hassle of requiring numerous 
 Supports the following commands:
 
 Music:
-- !play {url|search term} - Plays a YouTube URL or search term. The song is added to the queue if a song is playing.
+- !play {url|search term} - Plays a YouTube/Spotify URL or search term. The song is added to the queue if a song is playing.
 - !pause - Pauses current playback.
 - !resume - Resumes playback.
 - !stop - Stops any current music and clears the queue.
