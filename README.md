@@ -62,7 +62,9 @@ You should also set the following Privileged Gateway Intents, right above the Bo
 
 # Dependencies
 - [Node.js](https://nodejs.org/) 18.17.0 or higher
+- @distube/ytdl-core
 - @distube/youtube
+- @distube/spotify
 - dotenv
 - ffmpeg-static
 - libsodium-wrappers
