@@ -115,12 +115,12 @@ var YouTubePlugin = class extends import_distube.ExtractorPlugin {
   }
   async getStreamURL(song) {
     if (!song.url || !import_ytdl_core.default.validateURL(song.url)) throw new DisTubeError("CANNOT_RESOLVE_SONG", song);
-
+    
     try {
       const info = await import_ytdl_core.default.getInfo(song.url, this.ytdlOptions);
-
+      
       if (!info.formats?.length) throw new DisTubeError("UNAVAILABLE_VIDEO");
-
+      
       const newSong = new YouTubeSong(this, info, {});
       song.ageRestricted = newSong.ageRestricted;
       song.views = newSong.views;
@@ -129,27 +129,27 @@ var YouTubePlugin = class extends import_distube.ExtractorPlugin {
       song.related = newSong.related;
       song.chapters = newSong.chapters;
       song.storyboards = newSong.storyboards;
-
+      
       if (info.bestFormat && info.bestFormat.url) {
         return info.bestFormat.url;
       }
-
+      
       const playableFormats = info.formats.filter(format => 
         format && 
         format.url && 
         format.hasAudio && 
         (!newSong.isLive || format.isHLS)
       );
-
+      
       if (!playableFormats.length) throw new DisTubeError("UNPLAYABLE_FORMATS");
-
+      
       playableFormats.sort((a, b) => 
         Number(b.audioBitrate || 0) - Number(a.audioBitrate || 0) || 
         Number(b.bitrate || 0) - Number(a.bitrate || 0)
       );
-
+      
       const bestFormat = playableFormats[0];
-
+      
       return info.videoUrl || bestFormat.url;
     } catch (error) {
       console.error(`Error getting stream URL for ${song.url}:`, error);
