@@ -198,7 +198,7 @@ client.on('messageCreate', async (message) => {
 
                 var queueString = `**Current Queue:**\n` +
                     queue.songs
-                        .map((song, index) => `${index + 1}. ${song.name} - \`${song.formattedDuration}\``)
+                        .map((song, index) => `${index == 0 ? '🎵  Now Playing:' : `${index}.`} ${song.name} - \`${song.formattedDuration}\``)
                         .join('\n');
 
                 // Respect Discord message limit (2000);
