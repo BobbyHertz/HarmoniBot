@@ -14,6 +14,9 @@ Music:
 - !kill - Disconnects the bot from the voice channel.
 - !skip - Plays the next song in the queue.
 - !rewind - Plays the previous song in the queue.
+- !jump {number} - Jumps to the specified song number in the queue.
+- !shuffle - Randomly re-orders the songs in the queue.
+- !seek {seconds} - Sets the current song playback to the specified time.
 - !queue - Displays the current queue.
 
 Other:
