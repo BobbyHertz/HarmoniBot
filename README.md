@@ -59,6 +59,12 @@ Sets how long the bot waits to disconnect once the queue finishes.
 **`!debug {off|on|verbose}`**  
 Sets the debug logging level.
 
+**`!servers`**  
+Shows a list of all connected servers.
+
+**`!settings`**  
+Shows the settings for all connected servers.
+
 # Setup
 
 There are two parts to the setup. First, you must create a bot user to add to your Discord. Then, you run the application in your preferred environment using the bot's token.

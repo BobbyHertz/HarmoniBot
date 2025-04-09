@@ -7,7 +7,7 @@ const ffmpegPath = require('ffmpeg-static');
 
 // Local Project Dependencies
 const { logMessage, logError } = require('./libs/logger');
-const { getTimeoutMinutes, setTimeoutMinutes, getInactivityTimeout, setInactivityTimeout } = require('./libs/serverSettings');
+const { getAllSettings, getTimeoutMinutes, setTimeoutMinutes, getInactivityTimeout, setInactivityTimeout } = require('./libs/serverSettings');
 const { getDiscordToken, getBotAdminId, getDebugLoggingMode, setDebugLoggingMode } = require('./libs/adminSettings');
 
 const client = new Client({
@@ -206,8 +206,7 @@ client.on('messageCreate', async (message) => {
                         .map((song, index) => `${index == 0 ? '🎵  Now Playing:' : `${index}.`} ${song.name} - \`${song.formattedDuration}\``)
                         .join('\n');
 
-                // Respect Discord message limit (2000);
-                queueString = queueString.length >= 2000 ? `${queueString.slice(0, 1997)}...` : queueString;
+                queueString = truncateForDiscord(queueString);
 
                 message.channel.send(`${queueString}`);
 
@@ -234,6 +233,31 @@ client.on('messageCreate', async (message) => {
 
                         return message.reply(`Invalid debug mode value.`);
                 }
+
+                break;
+            case 'servers':
+
+                if (message.author.id != getBotAdminId()) return message.reply(`Only the bot administrator may view the connected server list.`);
+
+                var serverListString = `Connected servers: ${client.guilds.cache.size}\n` +
+                    client.guilds.cache
+                        .map(guild => `- ${guild.id}: ${guild.name}`)
+                        .join('\n');
+
+                serverListString = truncateForDiscord(serverListString);
+
+                message.channel.send(`${serverListString}`);
+
+                break;
+            case 'settings':
+
+                if (message.author.id != getBotAdminId()) return message.reply(`Only the bot administrator may view server settings.`);
+
+                var settingsString = JSON.stringify(getAllSettings(), null, 2);
+
+                settingsString = truncateForDiscord(settingsString);
+
+                message.channel.send(`${settingsString}`);
 
                 break;
             case 'timeout':
@@ -359,6 +383,13 @@ function createInactivityTimeout(server, textChannel, minutes) {
 
         setInactivityTimeout(server.id, null);
     }, minutes * 60 * 1000);
+};
+
+// Ensure a message respects Discord message limit (2000).
+function truncateForDiscord(message) {
+    return message.length >= 2000
+        ? `${message.slice(0, 1997)}...`
+        : message;
 };
 
 client.login(getDiscordToken());

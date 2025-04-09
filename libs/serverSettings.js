@@ -1,6 +1,12 @@
 // A global server array stores the settings for all servers.
 let servers = [];
 
+// Gets the saved settings for all servers.
+function getAllSettings() {
+
+    return servers;
+};
+
 // Gets the saved settings for a server. Default settings are returned if nothing has yet been saved.
 function getSettings(serverId) {
 
@@ -70,6 +76,7 @@ function addServer(serverId) {
 };
 
 module.exports = {
+    getAllSettings,
     getSettings,
     getTimeoutMinutes,
     setTimeoutMinutes,
