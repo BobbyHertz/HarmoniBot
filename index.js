@@ -60,7 +60,7 @@ client.on('messageCreate', async (message) => {
         switch (command) {
             case 'play':
 
-                if (args.length < 1) return message.reply(`Please provide a YouTube/Spotify URL or search query.`);
+                if (args.length < 1) return message.reply(`Please provide a YouTube/Youtube Music/Spotify URL or search query.`);
 
                 const loadingMsg = await message.channel.send(`Loading song. Please wait a moment...`);
 
@@ -111,60 +111,64 @@ client.on('messageCreate', async (message) => {
 
                 break;
             case 'skip':
+            case 'next':
+            case 'ff':
 
                 if (!queue) return message.reply(`The queue is empty, so there is nothing to skip to.`);
 
-                if (queue.songs.length <= 1) {
-                    return message.reply(`You are at the end of the queue, so there is nothing to skip to.`);
-                }
+                if (args.length < 1) {
 
-                await queue.skip();
-                await message.channel.send(`Skipping to the next song...`);
+                    if (queue.songs.length <= 1) {
+                        return message.reply(`You are at the end of the queue, so there is nothing to skip to.`);
+                    }
+    
+                    await queue.skip();
 
-                break;
-            case 'rewind':
-
-                if (!queue) return message.reply(`The queue is empty, so there is nothing to rewind to.`);
-
-                if (queue.previousSongs.length <= 0) {
-                    return message.reply(`You are at the beginning of the queue, so there is nothing to rewind to.`);
-                }
-
-                await queue.previous();
-                await message.channel.send(`Rewinding to the previous song...`);
-
-                break;
-            case 'jump':
-
-                if (!queue) return message.reply(`The queue is empty, so there is nothing to jump to.`);
-
-                if (args.length < 1) return message.reply(`Jumping to a queued song requires a value.`);
-
-                var songNumber = parseInt(args[0]);
-
-                if (!isNaN(songNumber) &&
-                    (songNumber > 1 && songNumber < queue.songs.length)) {
-
-                        await queue.jump(songNumber);
-
-                        await message.channel.send(`Jumped to song #${songNumber}.`);
-
-                } else if (!isNaN(songNumber) &&
-                    (songNumber < 0 && Math.abs(songNumber) <= queue.previousSongs.length)) {
-
-                        var songDist = Math.abs(songNumber);
-
-                        await queue.jump(songNumber);
-
-                        await message.channel.send(`Jumped back ${songDist} song${songDist > 1 ? 's' : ''}.`);
+                    await message.channel.send(`Skipping to the next song...`);
 
                 } else {
 
-                    return message.reply(`Invalid jump value.`);
+                    var songNumber = parseInt(args[0]);
+
+                    if (!isNaN(songNumber) &&
+                        (songNumber > 0 && songNumber < queue.songs.length)) {
+
+                            await queue.jump(songNumber);
+
+                            await message.channel.send(`Skipped to song #${songNumber}.`);
+
+                    } else if (!isNaN(songNumber) &&
+                        (songNumber < 0 && Math.abs(songNumber) <= queue.previousSongs.length)) {
+
+                            var songDist = Math.abs(songNumber);
+
+                            await queue.jump(songNumber);
+
+                            await message.channel.send(`Jumped back ${songDist} song${songDist > 1 ? 's' : ''}.`);
+
+                    } else {
+
+                        return message.reply(`Invalid skip value.`);
+                    }
                 }
 
                 break;
+            case 'previous':
+            case 'last':
+            case 'rw':
+
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to go back to.`);
+
+                if (queue.previousSongs.length <= 0) {
+                    return message.reply(`You are at the beginning of the queue, so there is nothing to go back to.`);
+                }
+
+                await queue.previous();
+                await message.channel.send(`Going back to the previous song...`);
+
+                break;
             case 'shuffle':
+            case 'random':
 
                 if (!queue) return message.reply(`The queue is empty, so there is nothing to shuffle.`);
 
@@ -193,6 +197,7 @@ client.on('messageCreate', async (message) => {
 
                 break;
             case 'queue':
+            case 'list':
 
                 if (!queue) return message.channel.send(`The queue is empty.`);
 
@@ -247,22 +252,22 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'help':
 
-                message.channel.send('```Available commands are:\n\n' +
-                    'Music:\n' +
-                    '!play {url|search term} - Plays a YouTube/Spotify URL or search term. The song is added to the queue if a song is playing.\n' +
-                    '!pause - Pauses current playback.\n' +
-                    '!resume - Resumes playback.\n' +
-                    '!stop - Stops any current music and clears the queue.\n' +
-                    '!kill - Disconnects the bot from the voice channel.\n' +
-                    '!skip - Plays the next song in the queue.\n' +
-                    '!rewind - Plays the previous song in the queue.\n' +
-                    '!jump {number} - Jumps to the specified song number in the queue.\n' +
-                    '!shuffle - Randomly re-orders the songs in the queue.\n' +
-                    '!seek {seconds} - Sets the current song playback to the specified time.\n' +
-                    '!queue - Displays the current queue.\n\n' +
-                    'Other:\n' +
-                    '!help - Displays the list of available commands.\n' +
-                    '!timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.```');
+                message.channel.send('The following commands are supported:\n\n' +
+                    '🎵 **Music Playback**\n\n' +
+                    '`!play {url|search term}` - Plays a YouTube/Youtube Music/Spotify link or search term. The song is added to the queue if a song is playing.\n' +
+                    '`!pause` - Pauses playback.\n' +
+                    '`!resume` - Resumes playback.\n' +
+                    '`!seek {seconds}` - Sets the current song playback to the specified time.\n' +
+                    '`!stop` - Stops music and clears the queue.\n\n' +
+                    '📀 **Playlist Control**\n\n' +
+                    '`!queue` - Shows the current song queue.  *Aliases*: `!list`\n' +
+                    '`!skip {number (optional)}` - Plays the next song. If a number is provided, skips the specified number of songs.  *Aliases*: `!next`, `!ff`\n' +
+                    '`!previous` - Plays the previous song.  *Aliases*: `!last`, `!rw`\n' +
+                    '`!shuffle` - Randomizes the order of the queue.  *Aliases*: `!random`\n\n' +
+                    '🛠 **Other Commands**\n\n' +
+                    '`!help` - Displays the list of available commands.\n' +
+                    '`!kill` - Disconnects the bot from the voice channel.\n' +
+                    '`!timeout {minutes (0-60)}` - Sets how long the bot waits to disconnect once the queue finishes.');
 
                 break;
         }

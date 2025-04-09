@@ -6,25 +6,58 @@ This bot requires no YouTube login, and avoids the hassle of requiring numerous 
 # Features
 Supports the following commands:
 
-Music:
-- !play {url|search term} - Plays a YouTube/Spotify URL or search term. The song is added to the queue if a song is playing.
-- !pause - Pauses current playback.
-- !resume - Resumes playback.
-- !stop - Stops any current music and clears the queue.
-- !kill - Disconnects the bot from the voice channel.
-- !skip - Plays the next song in the queue.
-- !rewind - Plays the previous song in the queue.
-- !jump {number} - Jumps to the specified song number in the queue.
-- !shuffle - Randomly re-orders the songs in the queue.
-- !seek {seconds} - Sets the current song playback to the specified time.
-- !queue - Displays the current queue.
+### 🎵 Music Playback
 
-Other:
-- !help - Displays the list of available commands.
-- !timeout {minutes (0-60)} - Sets the time the bot will wait to disconnect after the queue completes.
+**`!play {url|search term}`**
+Plays a YouTube/Youtube Music/Spotify link or search term.
+The song is added to the queue if a song is playing.
 
-Bot Admins Only:
-- !debug {off|on|verbose} - Sets the desired debug logging mode.
+**`!pause`**
+Pauses playback.
+
+**`!resume`**
+Resumes playback.
+
+**`!seek {seconds}`**
+Sets the current song playback to the specified time.
+
+**`!stop`**
+Stops music and clears the queue.
+
+### 📀 Playlist Control
+
+**`!queue`**
+Shows the current song queue.
+*Aliases:* `!list`
+
+**`!skip {number (optional)}`**
+Plays the next song.
+If a number is provided, skips the specified number of songs.
+*Aliases:* `!next`,`!ff`
+
+**`!previous`**
+Plays the previous song.
+*Aliases:* `!last`,`!rw`
+
+**`!shuffle`**
+Randomizes the order of the queue.
+*Aliases:* `!random`
+
+### 🛠️ Other Commands
+
+**`!help`**
+Displays the list of available commands.
+
+**`!kill`**
+Disconnects the bot from the voice channel.
+
+**`!timeout {minutes (0-60)}`**
+Sets how long the bot waits to disconnect once the queue finishes.
+
+### 🔒 Bot Admins Only
+
+**`!debug {off|on|verbose}`**  
+Sets the debug logging level.
 
 # Setup
 
