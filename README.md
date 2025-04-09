@@ -43,6 +43,9 @@ Plays the previous song.
 Randomizes the order of the queue.
 *Aliases:* `!random`
 
+**`!repeat {off|song|queue}`**
+Sets the repeat mode for the current song or queue.
+
 ### 🛠️ Other Commands
 
 **`!help`**

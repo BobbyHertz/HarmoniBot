@@ -179,6 +179,31 @@ client.on('messageCreate', async (message) => {
                 await message.channel.send(`Queue has been shuffled.`);
 
                 break;
+            case 'repeat':
+
+                if (!queue) return message.reply(`The queue is empty, so there is nothing to repeat.`);
+
+                if (args.length < 1) return message.reply(`Setting a repeat mode requires a value.`);
+
+                const repeatMode = args[0].toLowerCase();
+
+                const repeatModeMap = {
+                    off: 0,
+                    song: 1,
+                    queue: 2,
+                };
+                
+                if (repeatMode in repeatModeMap) {
+
+                    await queue.setRepeatMode(repeatModeMap[repeatMode]);
+
+                    message.channel.send(`Repeat mode set to \`${repeatMode.toUpperCase()}\`.`);
+                } else {
+
+                    return message.reply(`Invalid repeat mode value.`);
+                }
+
+                break;
             case 'seek':
 
                 if (!queue) return message.reply(`The queue is empty, so there is nothing to seek.`);
@@ -314,7 +339,8 @@ client.on('messageCreate', async (message) => {
                     '`!queue` - Shows the current song queue.  *Aliases*: `!list`\n' +
                     '`!skip {number (optional)}` - Plays the next song. If a number is provided, skips the specified number of songs.  *Aliases*: `!next`, `!ff`\n' +
                     '`!previous` - Plays the previous song.  *Aliases*: `!last`, `!rw`\n' +
-                    '`!shuffle` - Randomizes the order of the queue.  *Aliases*: `!random`\n\n' +
+                    '`!shuffle` - Randomizes the order of the queue.  *Aliases*: `!random`\n' +
+                    '`!repeat {off|song|queue}` - Sets the repeat mode for the current song or queue.\n\n' +
                     '🛠 **Other Commands**\n\n' +
                     '`!help` - Displays the list of available commands.\n' +
                     '`!prefix` - Sets the prefix for running commands.\n' +
