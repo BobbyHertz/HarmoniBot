@@ -7,7 +7,7 @@ const ffmpegPath = require('ffmpeg-static');
 
 // Local Project Dependencies
 const { logMessage, logError } = require('./libs/logger');
-const { getAllSettings, getTimeoutMinutes, setTimeoutMinutes, getInactivityTimeout, setInactivityTimeout } = require('./libs/serverSettings');
+const { getAllSettings, getPrefix, setPrefix, getTimeoutMinutes, setTimeoutMinutes, getInactivityTimeout, setInactivityTimeout } = require('./libs/serverSettings');
 const { getDiscordToken, getBotAdminId, getDebugLoggingMode, setDebugLoggingMode } = require('./libs/adminSettings');
 
 const client = new Client({
@@ -35,7 +35,11 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async (message) => {
-    if (message.author.bot || !message.content.startsWith('!')) return;
+
+    const server = message.guild;
+    const serverPrefix = getPrefix(server.id);
+
+    if (message.author.bot || !message.content.startsWith(serverPrefix)) return;
 
     const args = message.content.slice(1).trim().split(/ +/g);
     const command = args.shift()?.toLowerCase();
@@ -45,7 +49,6 @@ client.on('messageCreate', async (message) => {
         return message.reply(`You must be in a voice channel to use commands.`);
     }
 
-    const server = userVoiceChannel.guild;
     const queue = distube.getQueue(userVoiceChannel);
     if (queue &&
         queue?.voice?.channel.id != userVoiceChannel.id &&
@@ -260,6 +263,30 @@ client.on('messageCreate', async (message) => {
                 message.channel.send(`${settingsString}`);
 
                 break;
+            case 'prefix':
+                if (args.length < 1) return message.reply(`Setting a new prefix requires a value.`);
+
+                const newPrefix = args[0];
+
+                switch (newPrefix) {
+                    case '!':
+                    case '?':
+                    case '-':
+                    case '~':
+                    case '$':
+                    case '/':
+
+                        setPrefix(server.id, newPrefix);
+
+                        message.channel.send(`Command prefix now set to \`${newPrefix}\`.`);
+
+                        break;
+                    default:
+
+                        return message.reply(`Invalid prefix value. Valid values are \`!\`, \`?\`, \`-\`, \`~\`, \`$\`, and \`/\`.`);
+                }
+
+                break;
             case 'timeout':
 
                 if (args.length < 1) return message.reply(`Setting a timeout requires a value.`);
@@ -276,7 +303,7 @@ client.on('messageCreate', async (message) => {
                 break;
             case 'help':
 
-                message.channel.send('The following commands are supported:\n\n' +
+                var helpMessage = 'The following commands are supported:\n\n' +
                     '🎵 **Music Playback**\n\n' +
                     '`!play {url|search term}` - Plays a YouTube/Youtube Music/Spotify link or search term. The song is added to the queue if a song is playing.\n' +
                     '`!pause` - Pauses playback.\n' +
@@ -290,8 +317,13 @@ client.on('messageCreate', async (message) => {
                     '`!shuffle` - Randomizes the order of the queue.  *Aliases*: `!random`\n\n' +
                     '🛠 **Other Commands**\n\n' +
                     '`!help` - Displays the list of available commands.\n' +
+                    '`!prefix` - Sets the prefix for running commands.\n' +
                     '`!kill` - Disconnects the bot from the voice channel.\n' +
-                    '`!timeout {minutes (0-60)}` - Sets how long the bot waits to disconnect once the queue finishes.');
+                    '`!timeout {minutes (0-60)}` - Sets how long the bot waits to disconnect once the queue finishes.';
+
+                helpMessage = helpMessage.replaceAll('!', getPrefix(server.id));
+
+                message.channel.send(helpMessage);
 
                 break;
         }

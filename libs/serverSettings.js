@@ -16,6 +16,22 @@ function getSettings(serverId) {
     return servers[index];
 };
 
+// Gets the prefix setting.
+function getPrefix(serverId) {
+
+    let index = getServerIndex(serverId);
+
+    return servers[index].prefix;
+};
+
+// Sets the prefix setting.
+function setPrefix(serverId, value) {
+
+    let index = getServerIndex(serverId);
+
+    servers[index].prefix = value;
+};
+
 // Gets the timeoutMinutes setting.
 function getTimeoutMinutes(serverId) {
 
@@ -66,6 +82,7 @@ function addServer(serverId) {
     var newServer =
     {
         id: serverId,
+        prefix: '!',
         timeoutMinutes: 0,
         inactivityTimeout: null
     };
@@ -78,6 +95,8 @@ function addServer(serverId) {
 module.exports = {
     getAllSettings,
     getSettings,
+    getPrefix,
+    setPrefix,
     getTimeoutMinutes,
     setTimeoutMinutes,
     getInactivityTimeout,

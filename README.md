@@ -48,6 +48,9 @@ Randomizes the order of the queue.
 **`!help`**
 Displays the list of available commands.
 
+**`!prefix`**
+Sets the prefix for running commands.
+
 **`!kill`**
 Disconnects the bot from the voice channel.
 
