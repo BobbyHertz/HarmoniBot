@@ -8,56 +8,56 @@ Supports the following commands:
 
 ### 🎵 Music Playback
 
-**`!play {url|search term}`**
-Plays a YouTube/Youtube Music/Spotify link or search term.
+**`!play {url|search term}`**  
+Plays a YouTube/Youtube Music/Spotify link or search term.  
 The song is added to the queue if a song is playing.
 
-**`!pause`**
+**`!pause`**  
 Pauses playback.
 
-**`!resume`**
+**`!resume`**  
 Resumes playback.
 
-**`!seek {seconds}`**
+**`!seek {seconds}`**  
 Sets the current song playback to the specified time.
 
-**`!stop`**
+**`!stop`**  
 Stops music and clears the queue.
 
 ### 📀 Playlist Control
 
-**`!queue`**
-Shows the current song queue.
-*Aliases:* `!list`
+**`!queue`**  
+Shows the current song queue.  
+*Aliases*: `!list`
 
-**`!skip {number (optional)}`**
-Plays the next song.
-If a number is provided, skips the specified number of songs.
-*Aliases:* `!next`,`!ff`
+**`!skip {number (optional)}`**  
+Plays the next song.  
+If a number is provided, skips the specified number of songs.  
+*Aliases*: `!next`,`!ff`
 
-**`!previous`**
-Plays the previous song.
-*Aliases:* `!last`,`!rw`
+**`!previous`**  
+Plays the previous song.  
+*Aliases*: `!last`,`!rw`
 
-**`!shuffle`**
-Randomizes the order of the queue.
-*Aliases:* `!random`
+**`!shuffle`**  
+Randomizes the order of the queue.  
+*Aliases*: `!random`
 
-**`!repeat {off|song|queue}`**
+**`!repeat {off|song|queue}`**  
 Sets the repeat mode for the current song or queue.
 
 ### 🛠️ Other Commands
 
-**`!help`**
+**`!help`**  
 Displays the list of available commands.
 
-**`!prefix`**
+**`!prefix`**  
 Sets the prefix for running commands.
 
-**`!kill`**
+**`!kill`**  
 Disconnects the bot from the voice channel.
 
-**`!timeout {minutes (0-60)}`**
+**`!timeout {minutes (0-60)}`**  
 Sets how long the bot waits to disconnect once the queue finishes.
 
 ### 🔒 Bot Admins Only
