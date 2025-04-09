@@ -264,11 +264,11 @@ client.on('messageCreate', async (message) => {
 
                 if (args.length < 1) return message.reply(`Setting a timeout requires a value.`);
 
-                const number = parseInt(args[0]);
-                if (!isNaN(number) && number >= 0 && number <= 60) {
-                    setTimeoutMinutes(server.id, number);
+                const newTimeout = parseInt(args[0]);
+                if (!isNaN(newTimeout) && newTimeout >= 0 && newTimeout <= 60) {
+                    setTimeoutMinutes(server.id, newTimeout);
 
-                    message.channel.send(`Inactivity timeout set to \`${number} minutes\`.`);
+                    message.channel.send(`Inactivity timeout set to \`${newTimeout} minutes\`.`);
                 } else {
                     return message.reply(`Invalid timeout value.`);
                 }
