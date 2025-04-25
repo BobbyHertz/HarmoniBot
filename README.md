@@ -90,7 +90,13 @@ There are two parts to the setup. First, you must create a bot user to add to yo
 
 ## Linux (Docker) Instructions
 1) Install [Docker](https://docs.docker.com/engine/install/).
-2) Copy the required contents of the project folder (the libs folder, Dockerfile, index.js, package.json, and the .env file you created in the previous step) into a folder on your server (ex. /HarmoniBot).
+2) Copy the required contents of the project folder into a folder on your server (ex. /HarmoniBot).
+    - libs folder
+    - package_overrides folder
+    - Dockerfile
+    - index.js
+    - package.json
+    - .env file
 3) Change your running directory to this newly created folder and run the following command to create the Docker image: `docker build -t harmonibot .`
 4) Once complete, run this command to create and run the Docker container: `docker run -d --name harmonibot-container harmonibot`
 
