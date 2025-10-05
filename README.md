@@ -92,7 +92,6 @@ There are two parts to the setup. First, you must create a bot user to add to yo
 1) Install [Docker](https://docs.docker.com/engine/install/).
 2) Copy the required contents of the project folder into a folder on your server (ex. /HarmoniBot).
     - libs folder
-    - package_overrides folder
     - Dockerfile
     - index.js
     - package.json
