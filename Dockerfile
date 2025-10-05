@@ -13,8 +13,5 @@ RUN npm install
 # Copy the rest of the application files into the container
 COPY . .
 
-# Apply custom overrides for package files
-COPY package_overrides/@distube-youtube-index.js node_modules/@distube/youtube/dist/index.js
-
 # Define the default command to run the app
 CMD ["node", "index.js"]

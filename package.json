@@ -1,6 +1,6 @@
 {
   "name": "harmonibot",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,8 @@
   "dependencies": {
     "@distube/spotify": "^2.0.2",
     "@distube/youtube": "^1.0.4",
-    "@distube/ytdl-core": "4.16.12",
+    "@distube/ytdl-core": "https://codeload.github.com/ToddyTheNoobDud/ytdl-core-stuff/tar.gz/refs/heads/master",
+    "@snazzah/davey": "^0.1.7",
     "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.15",
