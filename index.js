@@ -30,7 +30,7 @@ const distube = new DisTube(client, {
     }
 });
 
-client.once('ready', () => {
+client.once('clientReady', () => {
     logMessage(`${client.user.tag} is online and ready!`);
 });
 
