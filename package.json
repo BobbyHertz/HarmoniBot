@@ -1,6 +1,6 @@
 {
   "name": "harmonibot",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,13 +13,14 @@
     "@distube/spotify": "^2.0.2",
     "@distube/youtube": "^1.0.4",
     "@distube/ytdl-core": "ToddyTheNoobDud/ytdl-core-stuff#4a8520276c3cd84893a40ab9138a2dbf0870cd09",
-    "@snazzah/davey": "^0.1.7",
-    "dotenv": "^16.4.7",
-    "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.15",
+    "@snazzah/davey": "^0.1.10",
+    "dotenv": "^17.3.1",
+    "ffmpeg-static": "^5.3.0",
+    "libsodium-wrappers": "^0.8.2",
     "opusscript": "^0.0.8"
   },
   "overrides": {
-    "superagent": "^10.2.0"
+    "superagent": "^10.3.0",
+    "undici": "^7.24.4"
   }
 }
