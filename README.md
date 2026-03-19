@@ -114,7 +114,7 @@ You should also set the following Privileged Gateway Intents, right above the Bo
 - Message Content Intent
 
 # Dependencies
-- [Node.js](https://nodejs.org/) 18.17.0 or higher
+- [Node.js](https://nodejs.org/) 22.12.0 or higher
 - @distube/ytdl-core
 - @distube/youtube
 - @distube/spotify
